@@ -1,12 +1,12 @@
-package com.library.library_api.controller;
-import com.library.library_api.entity.Message;
-import com.library.library_api.service.MessageService;
+package com.example.boilerroom.controller;
+import com.example.boilerroom.entity.Message;
+import com.example.boilerroom.service.MessageService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/message")
+@RequestMapping("/messages")
 public class MessageController {
     private final MessageService service;
 
@@ -16,7 +16,7 @@ public class MessageController {
 
     @PostMapping
     public Message create() {
-        return service.create("Foo");
+        return service.create("Hej, YH", 42);
     }
 
     @GetMapping

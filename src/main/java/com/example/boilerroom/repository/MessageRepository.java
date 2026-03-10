@@ -1,5 +1,5 @@
-package com.library.library_api.repository;
-import com.library.library_api.entity.Message;
+package com.example.boilerroom.repository;
+import com.example.boilerroom.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

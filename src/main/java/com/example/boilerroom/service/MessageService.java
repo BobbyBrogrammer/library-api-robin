@@ -1,6 +1,6 @@
-package com.library.library_api.service;
-import com.library.library_api.entity.Message;
-import com.library.library_api.repository.MessageRepository;
+package com.example.boilerroom.service;
+import com.example.boilerroom.entity.Message;
+import com.example.boilerroom.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +14,8 @@ public class MessageService {
         this.repository = repository;
     }
 
-    public Message create(String text) {
-        Message message = new Message(text);
+    public Message create(String text, int number) {
+        Message message = new Message(text, number);
         return repository.save(message);
     }
 

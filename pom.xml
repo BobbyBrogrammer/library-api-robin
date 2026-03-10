@@ -8,10 +8,10 @@
 		<version>3.5.11</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.library</groupId>
-	<artifactId>library-api</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>boilerroom-labb1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>library-api</name>
+	<name>boilerroom-labb1</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
