@@ -15,13 +15,23 @@ public class MessageController {
     }
 
     @PostMapping
-    public Message create() {
-        return service.create("Hej, YH", 42);
+    public Message create(@RequestBody Message message) {
+        return service.create(message.getText(), message.getNumber());
     }
 
     @GetMapping
     public List<Message> getAll() {
         return service.getAll();
+    }
+
+    @GetMapping("/{id}/number")
+    public int getNumber(@PathVariable Long id) {
+        return service.getNumber(id);
+    }
+
+    @GetMapping("/{id}/text")
+    public String getText(@PathVariable Long id) {
+        return service.getText(id);
     }
 
 

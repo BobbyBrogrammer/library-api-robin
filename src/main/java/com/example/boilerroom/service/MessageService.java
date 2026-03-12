@@ -22,4 +22,12 @@ public class MessageService {
     public List<Message> getAll() {
         return repository.findAll();
     }
+
+    public int getNumber(Long id) {
+        return repository.findById(id).get().getNumber();
+    }
+
+    public String getText(Long id) {
+        return repository.findById(id).get().getText();
+    }
 }
