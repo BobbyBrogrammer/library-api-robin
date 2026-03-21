@@ -1,0 +1,28 @@
+package com.example.boilerroom.controller;
+
+import com.example.boilerroom.dto.BookListResponseV2;
+import com.example.boilerroom.dto.BookResponseV2;
+import com.example.boilerroom.service.BookService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+    @RequestMapping("/api/v2/books")
+    public class BookControllerV2 {
+        private final BookService service;
+
+        public BookControllerV2(BookService service) {this.service = service;}
+
+        @GetMapping
+        public BookListResponseV2 getAll() {
+            List<BookResponseV2> books = service.getAllV2();
+            BookListResponseV2 response = new BookListResponseV2();
+            response.setVersion("v2");
+            response.setData(books);
+            return response;
+        }
+
+
+    }
+

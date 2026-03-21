@@ -2,6 +2,7 @@ package com.example.boilerroom.service;
 
 import com.example.boilerroom.dto.BookRequest;
 import com.example.boilerroom.dto.BookResponse;
+import com.example.boilerroom.dto.BookResponseV2;
 import com.example.boilerroom.model.Book;
 import com.example.boilerroom.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,23 @@ public class BookService {
         response.setIsbn(book.getIsbn());
         response.setPublishedYear(book.getPublishedYear());
         return response;
+    }
+
+    public List<BookResponseV2> getAllV2() {
+        List<Book> books = repository.findAll();
+        List<BookResponseV2> responses = new ArrayList<>();
+
+        for (Book book : books) {
+            BookResponseV2 response = new BookResponseV2();
+            response.setId(book.getId());
+            response.setTitle(book.getTitle());
+            response.setAuthor(book.getAuthor());
+            response.setIsbn(book.getIsbn());
+            response.setPublishedYear(book.getPublishedYear());
+            response.setAvailable(true);
+            responses.add(response);
+        }
+        return responses;
     }
 
 }
