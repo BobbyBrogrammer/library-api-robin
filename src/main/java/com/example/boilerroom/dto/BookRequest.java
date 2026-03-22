@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 public class BookRequest {
 
     @Schema(description = "Title of the book")
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
 
     @Schema(description = "Author of the book")
-    @NotBlank
+    @NotBlank(message = "Author is required")
     private String author;
 
     @Schema(description = "ISBN number")

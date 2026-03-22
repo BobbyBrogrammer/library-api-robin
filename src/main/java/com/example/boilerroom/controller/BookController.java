@@ -5,6 +5,7 @@ import com.example.boilerroom.dto.BookResponse;
 import com.example.boilerroom.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class BookController {
     @Operation(summary = "Create a new book")
     @ApiResponse(responseCode = "201", description = "Book created successfully")
     @PostMapping
-    public ResponseEntity<BookResponse> create(@RequestBody BookRequest request) {
+    public ResponseEntity<BookResponse> create(@RequestBody @Valid BookRequest request) {
         BookResponse response = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -42,5 +43,6 @@ public class BookController {
     public BookResponse getById(@PathVariable Long id) {
         return service.getById(id);
     }
+
 
 }

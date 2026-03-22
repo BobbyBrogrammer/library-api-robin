@@ -3,6 +3,7 @@ package com.example.boilerroom.service;
 import com.example.boilerroom.dto.BookRequest;
 import com.example.boilerroom.dto.BookResponse;
 import com.example.boilerroom.dto.BookResponseV2;
+import com.example.boilerroom.exception.BookNotFoundException;
 import com.example.boilerroom.model.Book;
 import com.example.boilerroom.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class BookService {
     public BookResponse getById(Long id) {
         Optional<Book> bookOptional = repository.findById(id);
         if (bookOptional.isEmpty()) {
-            throw new RuntimeException("Book not found with id: " + id);
+            throw new BookNotFoundException(id);
         }
         
         Book book = bookOptional.get();
