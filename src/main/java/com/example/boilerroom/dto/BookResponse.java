@@ -1,10 +1,22 @@
 package com.example.boilerroom.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class BookResponse {
+
+    @Schema(description = "Title of the book")
     private String title;
+
+    @Schema(description = "Author of the book")
     private String author;
+
+    @Schema(description = "ISBN number")
     private String isbn;
+
+    @Schema(description = "Year the book was published")
     private int publishedYear;
+
+    @Schema(description = "ID of the book")
     private Long id;
 
     // Getters

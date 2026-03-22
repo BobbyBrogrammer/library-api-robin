@@ -3,6 +3,8 @@ package com.example.boilerroom.controller;
 import com.example.boilerroom.dto.BookListResponseV2;
 import com.example.boilerroom.dto.BookResponseV2;
 import com.example.boilerroom.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 
         public BookControllerV2(BookService service) {this.service = service;}
 
+        @Operation(summary = "Get all books")
+        @ApiResponse(responseCode = "200", description = "List of all books")
         @GetMapping
         public BookListResponseV2 getAll() {
             List<BookResponseV2> books = service.getAllV2();

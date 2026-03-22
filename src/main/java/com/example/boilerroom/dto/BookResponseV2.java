@@ -1,12 +1,18 @@
 package com.example.boilerroom.dto;
-import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class BookResponseV2 {
+        @Schema(description = "Title of the book")
         private String title;
+        @Schema(description = "Author of the book")
         private String author;
+        @Schema(description = "ISBN number")
         private String isbn;
+        @Schema(description = "Year the book was published")
         private int publishedYear;
+        @Schema(description = "ID of the book")
         private Long id;
+        @Schema(description = "Is the book available?")
         private boolean available;
 
         // Getters
