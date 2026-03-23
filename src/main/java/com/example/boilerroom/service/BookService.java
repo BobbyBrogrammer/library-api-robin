@@ -22,13 +22,13 @@ public class BookService {
         this.repository = repository;
     }
     public BookResponse create(BookRequest request) {
-        Book book = new Book(request.getTitle(), request.getAuthor(), request.getIsbn(), request.getPublishedYear());
+        Book book = new Book(request.getTitle(), null, request.getIsbn(), request.getPublishedYear());
         Book saved = repository.save(book);
 
         BookResponse response = new BookResponse();
         response.setId(saved.getId());
         response.setTitle(saved.getTitle());
-        response.setAuthor(saved.getAuthor());
+        response.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
         response.setIsbn(saved.getIsbn());
         response.setPublishedYear(saved.getPublishedYear());
         return response;
@@ -42,7 +42,7 @@ public class BookService {
             BookResponse response = new BookResponse();
             response.setId(book.getId());
             response.setTitle(book.getTitle());
-            response.setAuthor(book.getAuthor());
+            response.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
             response.setIsbn(book.getIsbn());
             response.setPublishedYear(book.getPublishedYear());
             responses.add(response);
@@ -60,7 +60,7 @@ public class BookService {
         BookResponse response = new BookResponse();
         response.setId(book.getId());
         response.setTitle(book.getTitle());
-        response.setAuthor(book.getAuthor());
+        response.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
         response.setIsbn(book.getIsbn());
         response.setPublishedYear(book.getPublishedYear());
         return response;
@@ -74,7 +74,7 @@ public class BookService {
             BookResponseV2 response = new BookResponseV2();
             response.setId(book.getId());
             response.setTitle(book.getTitle());
-            response.setAuthor(book.getAuthor());
+            response.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
             response.setIsbn(book.getIsbn());
             response.setPublishedYear(book.getPublishedYear());
             response.setAvailable(true);
