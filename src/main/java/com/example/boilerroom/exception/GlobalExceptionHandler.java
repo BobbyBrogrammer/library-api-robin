@@ -30,5 +30,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(BookAlreadyOnLoanException.class)
+    public ResponseEntity<ErrorResponse> handleBookAlreadyOnLoan(
+            BookAlreadyOnLoanException ex, HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(LocalDateTime.now().toString(), 400, "Bad Request",
+                ex.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
 }
 
