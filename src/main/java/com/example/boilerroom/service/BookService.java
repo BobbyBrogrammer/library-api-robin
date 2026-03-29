@@ -4,7 +4,9 @@ import com.example.boilerroom.dto.BookRequest;
 import com.example.boilerroom.dto.BookResponse;
 import com.example.boilerroom.dto.BookResponseV2;
 import com.example.boilerroom.exception.BookNotFoundException;
+import com.example.boilerroom.model.Author;
 import com.example.boilerroom.model.Book;
+import com.example.boilerroom.repository.AuthorRepository;
 import com.example.boilerroom.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,26 +18,38 @@ import java.util.Optional;
 @Service
 public class BookService {
     
-    private final BookRepository repository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
     
-    public BookService(BookRepository repository) {
-        this.repository = repository;
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
     public BookResponse create(BookRequest request) {
-        Book book = new Book(request.getTitle(), null, request.getIsbn(), request.getPublishedYear());
-        Book saved = repository.save(book);
+        Book book = new Book();
+        book.setTitle(request.getTitle());
+        book.setIsbn(request.getIsbn());
+        book.setPublishedYear(request.getPublishedYear());
+
+        if (request.getAuthorId() != null) {
+            Author author = authorRepository.findById(request.getAuthorId())
+                    .orElseThrow(() -> new BookNotFoundException(request.getAuthorId()));
+            book.setAuthor(author);
+        }
+
+        Book saved = bookRepository.save(book);
 
         BookResponse response = new BookResponse();
         response.setId(saved.getId());
         response.setTitle(saved.getTitle());
-        response.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
+        response.setAuthor(saved.getAuthor() != null ? saved.getAuthor().getName() : null);
         response.setIsbn(saved.getIsbn());
         response.setPublishedYear(saved.getPublishedYear());
         return response;
     }
 
     public List<BookResponse> getAll() {
-        List<Book> books = repository.findAll();
+        List<Book> books = bookRepository.findAll();
         List<BookResponse> responses = new ArrayList<>();
 
         for (Book book : books) {
@@ -51,7 +65,7 @@ public class BookService {
     }
 
     public BookResponse getById(Long id) {
-        Optional<Book> bookOptional = repository.findById(id);
+        Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isEmpty()) {
             throw new BookNotFoundException(id);
         }
@@ -67,7 +81,7 @@ public class BookService {
     }
 
     public List<BookResponseV2> getAllV2() {
-        List<Book> books = repository.findAll();
+        List<Book> books = bookRepository.findAll();
         List<BookResponseV2> responses = new ArrayList<>();
 
         for (Book book : books) {

@@ -10,9 +10,8 @@ public class BookRequest {
     private String title;
 
 
-    @Schema(description = "Author of the book")
-    @NotBlank(message = "Author is required")
-    private String author;
+    @Schema(description = "Author ID")
+    private Long authorId;
 
     @Schema(description = "ISBN number")
     private String isbn;
@@ -22,13 +21,13 @@ public class BookRequest {
 
     // Getters
     public String getTitle() {return title;}
-    public String getAuthor() {return author;}
+    public Long getAuthorId() {return authorId;}
     public String getIsbn() {return isbn;}
     public int getPublishedYear() {return publishedYear;}
 
     // Setters
     public void setTitle(String title) {this.title = title;}
-    public void setAuthor(String author) {this.author = author;}
+    public void setAuthorId(Long authorId) {this.authorId = authorId;}
     public void setIsbn(String isbn) {this.isbn = isbn;}
     public void setPublishedYear(int publishedYear) {this.publishedYear = publishedYear;}
 }
