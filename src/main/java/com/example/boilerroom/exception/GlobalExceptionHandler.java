@@ -1,5 +1,6 @@
 package com.example.boilerroom.exception;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import com.example.boilerroom.dto.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,6 +37,21 @@ public class GlobalExceptionHandler {
 
         ErrorResponse error = new ErrorResponse(LocalDateTime.now().toString(), 400, "Bad Request",
                 ex.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now().toString(),
+                400,
+                "Bad Request",
+                "Book is already on loan",
+                request.getRequestURI()
+        );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

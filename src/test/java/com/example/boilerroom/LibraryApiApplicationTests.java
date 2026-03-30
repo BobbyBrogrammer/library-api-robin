@@ -15,6 +15,14 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -133,5 +141,46 @@ class LibraryApiApplicationTests {
                 "/api/v1/loans", loanDTO, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, secondLoan.getStatusCode());
+    }
+
+    @Test
+    void createLoanConcurrently_onlyOneShouldSucceed() throws InterruptedException {
+        // create a book to loan
+        BookRequest bookRequest = new BookRequest();
+        bookRequest.setTitle("The Hobbit");
+        ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity(
+                "/api/v1/books", bookRequest, BookResponse.class);
+        Long bookId = bookResponse.getBody().getId();
+
+        // use CountDownLatch to fire both threads at the same time
+        CountDownLatch latch = new CountDownLatch(1);
+        List<Integer> statusCodes = Collections.synchronizedList(new ArrayList<>());
+
+        LoanDTO loanDTO = new LoanDTO();
+        loanDTO.setBookId(bookId);
+
+        Runnable task = () -> {
+            try {
+                latch.await(); // wait for the signal
+                ResponseEntity<String> response = restTemplate.postForEntity(
+                        "/api/v1/loans", loanDTO, String.class);
+                statusCodes.add(response.getStatusCode().value());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        };
+
+        // start two threads trying to loan the same book
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(task);
+        executor.submit(task);
+
+        latch.countDown(); // fire both threads at the same time
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+
+        // one should succeed with 201, one should fail with 400
+        assertTrue(statusCodes.contains(201));
+        assertTrue(statusCodes.contains(400));
     }
 }

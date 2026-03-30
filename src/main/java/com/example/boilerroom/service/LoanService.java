@@ -8,6 +8,7 @@ import com.example.boilerroom.model.Loan;
 import com.example.boilerroom.repository.BookRepository;
 import com.example.boilerroom.repository.LoanRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +23,7 @@ public class LoanService {
         this.bookRepository = bookRepository;
     }
 
+    @Transactional
     public LoanDTO create(Long bookId) {
         Book book = bookRepository.findById(bookId)
         .orElseThrow(() -> new BookNotFoundException(bookId));
