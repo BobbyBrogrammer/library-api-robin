@@ -4,11 +4,11 @@ import com.example.boilerroom.dto.AuthorDTO;
 import com.example.boilerroom.dto.BookRequest;
 import com.example.boilerroom.dto.BookResponse;
 import com.example.boilerroom.dto.LoanDTO;
+import com.example.boilerroom.model.Book;
 import com.example.boilerroom.repository.AuthorRepository;
 import com.example.boilerroom.repository.BookRepository;
 import com.example.boilerroom.repository.LoanRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -105,7 +105,7 @@ class LibraryApiApplicationTests {
 
     @Test
     void createLoan_shouldReturn201() {
-        // need a book before we can loan it
+        // create a book before we can loan it
         BookRequest bookRequest = new BookRequest();
         bookRequest.setTitle("The Hobbit");
         ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity(
@@ -124,7 +124,6 @@ class LibraryApiApplicationTests {
 
     @Test
     void createLoanTwice_shouldReturn400() {
-        // create a book
         BookRequest bookRequest = new BookRequest();
         bookRequest.setTitle("The Hobbit");
         ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity(
@@ -183,4 +182,137 @@ class LibraryApiApplicationTests {
         assertTrue(statusCodes.contains(201));
         assertTrue(statusCodes.contains(400));
     }
+
+    @Test
+    void getAuthorById_shouldReturn200() {
+        AuthorDTO authorDTO = new AuthorDTO();
+        authorDTO.setName("Tolkien");
+        ResponseEntity<AuthorDTO> created = restTemplate.postForEntity(
+                "/api/v1/authors", authorDTO, AuthorDTO.class);
+        Long authorId = created.getBody().getId();
+
+        ResponseEntity<AuthorDTO> response = restTemplate.getForEntity(
+                "/api/v1/authors/" + authorId, AuthorDTO.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Tolkien", response.getBody().getName());
+    }
+
+    @Test
+    void getAuthorById_shouldReturn404_whenNotFound() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/authors/9999", String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void createLoan_shouldReturn404_whenBookDoesNotExist() {
+        LoanDTO loanDTO = new LoanDTO();
+        loanDTO.setBookId(9999L);
+
+        ResponseEntity<String> response = restTemplate.postForEntity("/api/v1/loans", loanDTO, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getLoans_shouldReturn200WithCreatedLoan() {
+        BookRequest bookRequest = new BookRequest();
+        bookRequest.setTitle("Dune");
+        ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity(
+                "/api/v1/books", bookRequest, BookResponse.class);
+        Long bookId = bookResponse.getBody().getId();
+
+        LoanDTO loanDTO = new LoanDTO();
+        loanDTO.setBookId(bookId);
+        restTemplate.postForEntity("/api/v1/loans", loanDTO, LoanDTO.class);
+
+        ResponseEntity<LoanDTO[]> response = restTemplate.getForEntity("/api/v1/loans", LoanDTO[].class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().length);
+    }
+
+    @Test
+    void getLoans_shouldReturnEmptyList_whenNoLoansExist() {
+        ResponseEntity<LoanDTO[]> response = restTemplate.getForEntity("/api/v1/loans", LoanDTO[].class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, response.getBody().length);
+    }
+
+    @Test
+    void getBookById_shouldReturn404_whenNotFound() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/books/9999", String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getAllBooks_shouldReturn200() {
+        BookRequest request = new BookRequest();
+        request.setTitle("The Hobbit");
+        restTemplate.postForEntity("/api/v1/books", request, BookResponse.class);
+
+        ResponseEntity<BookResponse[]> response = restTemplate.getForEntity("/api/v1/books", BookResponse[].class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().length);
+        assertNull(response.getBody()[0].getAuthor());
+    }
+
+    @Test
+    void getAllBooksV2_shouldReturn200() {
+        AuthorDTO authorDTO = new AuthorDTO();
+        authorDTO.setName("Tolkien");
+
+        ResponseEntity<AuthorDTO> authorResponse = restTemplate.postForEntity("/api/v1/authors",
+                authorDTO, AuthorDTO.class);
+        Long authorId = authorResponse.getBody().getId();
+
+        BookRequest request = new BookRequest();
+        request.setTitle("The Hobbit");
+        request.setAuthorId(authorId);
+        restTemplate.postForEntity("/api/v1/books", request, BookResponse.class);
+
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/v2/books", String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void createBook_shouldReturn404_whenAuthorDoesNotExist() {
+        BookRequest request = new BookRequest();
+        request.setTitle("The Hobbit");
+        request.setAuthorId(9999L);
+
+        ResponseEntity<String> response = restTemplate.postForEntity("/api/v1/books", request, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getBookById_shouldReturn200WithNullAuthor() {
+        BookRequest request = new BookRequest();
+        request.setTitle("The Hobbit");
+
+        ResponseEntity<BookResponse> created = restTemplate.postForEntity("/api/v1/books",
+                request, BookResponse.class);
+        Long id = created.getBody().getId();
+
+        ResponseEntity<BookResponse> response = restTemplate.getForEntity("/api/v1/books/" + id, BookResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().getAuthor());
+    }
+
+    @Test
+    void getAllBooksV2_shouldReturn200WithNullAuthor() {
+        BookRequest request = new BookRequest();
+        request.setTitle("The Hobbit");
+        restTemplate.postForEntity("/api/v1/books", request, BookResponse.class);
+
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/v2/books", String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 }
