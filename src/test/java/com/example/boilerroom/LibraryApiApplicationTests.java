@@ -315,4 +315,39 @@ class LibraryApiApplicationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    void createLoanConcurrently_demonstratesRaceCondition() throws InterruptedException {
+        BookRequest bookRequest = new BookRequest();
+        bookRequest.setTitle("The Hobbit");
+        ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity("/api/v1/books",
+                bookRequest, BookResponse.class);
+        Long bookId = bookResponse.getBody().getId();
+
+        CountDownLatch latch = new CountDownLatch(1);
+        List<Integer> statusCodes = Collections.synchronizedList(new ArrayList<>());
+
+        LoanDTO loanDTO = new LoanDTO();
+        loanDTO.setBookId(bookId);
+
+        Runnable task = () -> {
+            try {
+                latch.await();
+                ResponseEntity<String> response = restTemplate.postForEntity("/api/v1/loans", loanDTO, String.class);
+                statusCodes.add(response.getStatusCode().value());
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        };
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(task);
+        executor.submit(task);
+        latch.countDown();
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+
+        System.out.println("Status codes: " + statusCodes);
+        assertEquals(2, statusCodes.size());
+    }
+
 }
