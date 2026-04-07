@@ -181,6 +181,7 @@ class LibraryApiApplicationTests {
         // one should succeed with 201, one should fail with 400
         assertTrue(statusCodes.contains(201));
         assertTrue(statusCodes.contains(400));
+        assertEquals(1, loanRepository.count()); // @Transactional ensures only one loan is created
     }
 
     @Test
