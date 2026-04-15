@@ -3,6 +3,8 @@ package com.example.boilerroom.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
+// BookRequests uppgift är att representera inkommande data när en ny bok skapas via POST /api/v1/books.
+// Innehåller "title" (obligatorisk), valfritt "authorId", "isbn" och "publishedYear".
 public class BookRequest {
 
     @Schema(description = "Title of the book")

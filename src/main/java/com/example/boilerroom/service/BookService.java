@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 
+// BookServices uppgift är att hantera logiken för böcker och hämta data från BookRepository och AuthorRepository.
+// LoanRepository används här för att avgöra om en bok är tillgänglig i v2-svaret.
 @Service
 public class BookService {
     

@@ -2,6 +2,7 @@ package com.example.boilerroom.dto;
 
 import java.util.List;
 
+// Wrappas svaret från GET /api/v2/books med "data" (boklistan) och "version" (alltid "v2").
 public class BookListResponseV2 {
     private String version;
     private List<BookResponseV2> data;

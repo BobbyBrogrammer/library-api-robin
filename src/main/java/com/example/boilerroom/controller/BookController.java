@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// BookControllers uppgift är att ta emot HTTP-anrop för böcker (v1) och skicka dem vidare till BookService.
+// Hanterar GET /api/v1/books, GET /api/v1/books/{id} och POST /api/v1/books.
 @RestController
 @RequestMapping("/api/v1/books")
 public class BookController {

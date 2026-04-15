@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Hanterar HTTP-anrop för författare och skickar dem vidare till AuthorService.
+// POST /api/v1/authors, GET /api/v1/authors/{id} och GET /api/v1/authors/{id}/books.
 @RestController
 @RequestMapping("/api/v1/authors")
 public class AuthorController {

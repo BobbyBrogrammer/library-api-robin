@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+// LoanServices uppgift är att hantera logiken för lån och hämta data från LoanRepository och BookRepository.
+// Affärsregeln att en bok bara får ha ett aktivt lån upprätthålls här.
+// @Transactional på create() används för att förhindra race conditions vid samtidiga anrop.
 @Service
 public class LoanService {
     private final LoanRepository loanRepository;

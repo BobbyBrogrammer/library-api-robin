@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+// Ansvarar för logiken kring författare och hämtar data från AuthorRepository.
+// Stream API används för att mappa en författares böcker till BookResponse när man hämtar böcker per författare.
 @Service
 public class AuthorService {
 

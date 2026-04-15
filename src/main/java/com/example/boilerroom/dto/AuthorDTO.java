@@ -2,6 +2,8 @@ package com.example.boilerroom.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+// AuthorDTOs uppgift är att representera en författare i både request och response.
+// Innehåller "id", "name" (obligatorisk) och "bookCount" som visar hur många böcker författaren har.
 public class AuthorDTO {
     private Long id;
     @NotBlank(message = "Author name is required")

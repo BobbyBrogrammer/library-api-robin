@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Tar emot HTTP-anrop för lån och skickar dem vidare till LoanService.
+// Hanterar POST /api/v1/loans och GET /api/v1/loans.
 @RestController
 @RequestMapping("/api/v1/loans")
 public class LoanController {

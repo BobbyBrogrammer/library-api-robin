@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
+// Fångar upp undantag och returnerar strukturerade felsvar med rätt HTTP-statuskod.
+// Hanterar 404 (ej hittad), 400 (redan utlånad, valideringsfel och DB-konflikt).
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

@@ -2,6 +2,8 @@ package com.example.boilerroom.dto;
 
 import java.time.LocalDate;
 
+// LoanDTOs uppgift är att representera ett lån i både request och response.
+// Vid request används bara "bookId". I response inkluderas även "id", "bookTitle", "loanDate" och "returnDate".
 public class LoanDTO {
     private Long id;
     private Long bookId;

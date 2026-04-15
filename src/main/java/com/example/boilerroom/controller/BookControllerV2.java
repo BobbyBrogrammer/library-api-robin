@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Hanterar GET /api/v2/books.
+// Returnerar böcker med fältet "available" wrappat i ett svar med "data" och "version".
 @RestController
     @RequestMapping("/api/v2/books")
     public class BookControllerV2 {

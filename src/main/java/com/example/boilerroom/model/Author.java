@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+// Representerar en författare i systemet.
+// Innehåller ett unikt "id", "name" och en lista "books" med alla böcker kopplade till författaren.
 @Entity
 public class Author {
     @Id

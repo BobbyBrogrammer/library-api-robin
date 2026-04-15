@@ -1,6 +1,9 @@
 package com.example.boilerroom.model;
 import jakarta.persistence.*;
 
+// Books uppgift är att representera en bok i systemet.
+// Innehåller ett unikt "id", "title", "isbn" och "publishedYear", samt en koppling till en författare via "author".
+// "version" används för optimistic locking – skyddar mot att två trådar skriver över varandra samtidigt.
 @Entity
 public class Book {
     @Id

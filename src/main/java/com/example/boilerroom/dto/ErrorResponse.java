@@ -1,5 +1,7 @@
 package com.example.boilerroom.dto;
 
+// Strukturerat felsvar som returneras av GlobalExceptionHandler.
+// Innehåller "timestamp", "status", "error", "message" och "path" (vilken URL som anropades).
 public class ErrorResponse {
     private String timestamp;
     private int status;

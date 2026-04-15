@@ -2,6 +2,8 @@ package com.example.boilerroom.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+// BookResponses uppgift är att representera en bok i API-svaret (v1).
+// Innehåller "id", "title", "author" (som en sträng), "isbn" och "publishedYear".
 public class BookResponse {
 
     @Schema(description = "Title of the book")

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+// Representerar ett lån i systemet.
+// Innehåller "id", koppling till en bok via "book", "loanDate" och "returnDate" (null tills boken återlämnas).
+// "book_id" är unik i databasen vilket säkerställer att en bok bara kan ha ett aktivt lån åt gången.
 @Entity
 public class Loan {
 

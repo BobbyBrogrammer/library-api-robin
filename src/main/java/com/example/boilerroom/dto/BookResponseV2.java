@@ -1,6 +1,7 @@
 package com.example.boilerroom.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+// Samma som BookResponse men används i v2 – har ett extra fält "available" som är true om boken är ledig, annars false.
 public class BookResponseV2 {
         @Schema(description = "Title of the book")
         private String title;
