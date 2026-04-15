@@ -1,7 +1,10 @@
 package com.example.boilerroom.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class AuthorDTO {
     private Long id;
+    @NotBlank(message = "Author name is required")
     private String name;
     private int bookCount;
 

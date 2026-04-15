@@ -8,6 +8,7 @@ import com.example.boilerroom.model.Author;
 import com.example.boilerroom.model.Book;
 import com.example.boilerroom.repository.AuthorRepository;
 import com.example.boilerroom.repository.BookRepository;
+import com.example.boilerroom.repository.LoanRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,10 +21,12 @@ public class BookService {
     
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
-    
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+    private final LoanRepository loanRepository;
+
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, LoanRepository loanRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
+        this.loanRepository = loanRepository;
     }
     public BookResponse create(BookRequest request) {
         Book book = new Book();
@@ -91,7 +94,7 @@ public class BookService {
             response.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
             response.setIsbn(book.getIsbn());
             response.setPublishedYear(book.getPublishedYear());
-            response.setAvailable(true);
+            response.setAvailable(!loanRepository.existsByBookId(book.getId()));
             responses.add(response);
         }
         return responses;

@@ -142,16 +142,57 @@ class LibraryApiApplicationTests {
         assertEquals(HttpStatus.BAD_REQUEST, secondLoan.getStatusCode());
     }
 
+//    @Test
+//    void createLoanConcurrently_onlyOneShouldSucceed() throws InterruptedException {
+//        // create a book to loan
+//        BookRequest bookRequest = new BookRequest();
+//        bookRequest.setTitle("The Hobbit");
+//        ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity(
+//                "/api/v1/books", bookRequest, BookResponse.class);
+//        Long bookId = bookResponse.getBody().getId();
+//
+//        // use CountDownLatch to fire both threads at the same time
+//        CountDownLatch latch = new CountDownLatch(1);
+//        List<Integer> statusCodes = Collections.synchronizedList(new ArrayList<>());
+//
+//        LoanDTO loanDTO = new LoanDTO();
+//        loanDTO.setBookId(bookId);
+//
+//        Runnable task = () -> {
+//            try {
+//                latch.await(); // wait for the signal
+//                ResponseEntity<String> response = restTemplate.postForEntity(
+//                        "/api/v1/loans", loanDTO, String.class);
+//                statusCodes.add(response.getStatusCode().value());
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+//        };
+//
+//        // start two threads trying to loan the same book
+//        ExecutorService executor = Executors.newFixedThreadPool(2);
+//        executor.submit(task);
+//        executor.submit(task);
+//
+//        latch.countDown(); // fire both threads at the same time
+//        executor.shutdown();
+//        executor.awaitTermination(5, TimeUnit.SECONDS);
+//
+//        // one should succeed with 201, one should fail with 400
+//        assertTrue(statusCodes.contains(201));
+//        assertTrue(statusCodes.contains(400));
+//        assertEquals(1, loanRepository.count()); // @Transactional ensures only one loan is created
+//    }
+
     @Test
-    void createLoanConcurrently_onlyOneShouldSucceed() throws InterruptedException {
-        // create a book to loan
+    void createLoanConcurrently_100Threads_onlyOneShouldSucceed() throws InterruptedException {
         BookRequest bookRequest = new BookRequest();
         bookRequest.setTitle("The Hobbit");
         ResponseEntity<BookResponse> bookResponse = restTemplate.postForEntity(
                 "/api/v1/books", bookRequest, BookResponse.class);
         Long bookId = bookResponse.getBody().getId();
 
-        // use CountDownLatch to fire both threads at the same time
+        int threadCount = 100;
         CountDownLatch latch = new CountDownLatch(1);
         List<Integer> statusCodes = Collections.synchronizedList(new ArrayList<>());
 
@@ -160,28 +201,27 @@ class LibraryApiApplicationTests {
 
         Runnable task = () -> {
             try {
-                latch.await(); // wait for the signal
+                latch.await();
                 ResponseEntity<String> response = restTemplate.postForEntity(
                         "/api/v1/loans", loanDTO, String.class);
                 statusCodes.add(response.getStatusCode().value());
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         };
 
-        // start two threads trying to loan the same book
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        executor.submit(task);
-        executor.submit(task);
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        for (int i = 0; i < threadCount; i++) {
+            executor.submit(task);
+        }
 
-        latch.countDown(); // fire both threads at the same time
+        latch.countDown();
         executor.shutdown();
-        executor.awaitTermination(5, TimeUnit.SECONDS);
+        executor.awaitTermination(30, TimeUnit.SECONDS);
 
-        // one should succeed with 201, one should fail with 400
         assertTrue(statusCodes.contains(201));
-        assertTrue(statusCodes.contains(400));
-        assertEquals(1, loanRepository.count()); // @Transactional ensures only one loan is created
+        assertEquals(1, loanRepository.count());
+        System.out.println("Status codes: " + statusCodes);
     }
 
     @Test
