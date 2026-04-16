@@ -16,6 +16,10 @@ köar upp mot databasen.
 - Standard är 10 anslutningar mot databasen
 - Vid 1000 samtidiga anrop väntar 990 på en ledig anslutning
 
+> **Connection** pool-konfiguration är inte satt i `application.properties` eftersom
+> projektet använder H2 in-memory och inte en produktionsdatabas. I ett riktigt system 
+> med PostgreSQL hade `maximum-pool-size` satts explicit baserat på antal CPU-kärnor 
+> och förväntad belastning — exempelvis `(antal kärnor × 2) + 1` som tumregel.
 ---
 
 ### H2 vs Produktion
